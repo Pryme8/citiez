@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Citiez - Experiments</title>
+<link href="./city.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="./Vector2.js"></script>
+<script type="text/javascript" src="./citiez.js"></script>
+
+</head>
+<body>
+<h1>Citiez
+<span>Experiments in Procedural Streets</span>
+</h1>
+<hr />
+<h4>Preface</h4>
+<p>L-Systems are an ideal way to produce predictable growth, and have been used in recent years to generate entire cities.  I have found that the process of using turtle logic is just like its name slow... and does not have very many options for the branches of the system to make intelligent decisions about their surroundings, maintain a object hierarchy that is transversable, or store any important variables.  They are basically dumb and can be given pseudo intelligence.  I started trying to work with the standard format for constructing a library for axioms and found that this was not a very robust way to make anything of value.  I'm going to be honest tons of the stuff I see guys do with L-Systems is crazy, and I have a great amount of respect for it, but I still wanna kinda do things my way so yeah.</p>
+<p>The basic idea is just like an L-System I will construct an "alphabet".  These characters though are just a naming convention for embedded functional objects, that can be constructed and then reference a rule with the same name type effectively making a dynamic and tailorable constructor class that is deployed on runtime.  Inside a basic component of the system (a axiom or road) it holds all the basic data that is going to be needed to construct our road map, these variables include path information and some other general information. Each Axiom contains a repo, that references other axioms in the library for when this branch is no longer valid, to spawn.  Each Axiom works independently of the others and essentially has restrictions it tries to maintain, if all restrictions are out of limits then the thread terminates and sends a message to the main script to start the IO on another Axiom.</p>
+<p>Right away I can see benefits to this system, as I can store street names, locations, elevations, spatial data, etc.  Also in later version I will be looking to extend the Survey area to a larger zone, and have each block be processed with later optimization functions deciding the route and conditions.  I see this being completely valid for the construction of real time procedural content, as all the calculations can happen on a sub thread and IO's divided, with the detail slowly building up.  This build up could also enable the options for LOD</p>
+<h4>Test - 1</h4>
+<p>
+In my first tests I did not include elevation calculations, the roads only scan their local North, South, East, or West points in the Survey.  Population clamp is set to 0.65 or 255*0.65.  The roads will stop if the hit a intersection or can not travel their primary direction and one initial alternate direction that is established on the first turn.  This is a very simple model, but the effect is immediately noticeable.
+
+<center><div class='out-wrap' id='test-1'>
+<canvas class='ouput' id='roads' width='600px' height='600px'></canvas>
+<canvas class='ouput' id='population' width='600px' height='600px'></canvas>
+<canvas class='ouput' id='elevation' width='600px' height='600px'></canvas>
+<canvas class='ouput' id='overlay' width='600px' height='600px'></canvas>
+</div>
+<div class='out-menu' id='out-1'>
+<h5>Settings :</h5>
+<hr/>
+<div class='in-single'><span>City Name</span><span><input id='city-name' value='New-City' /></span></div>
+<div class='in-split'><span>Origin:</span><span>X</span><span><input id='city-origin-x' value='250' act='update-origin' /></span><span>Y</span><span><input id='city-origin-y' value='240' act='update-origin'  /></span></div>
+<!-- <div class='in-single'><span>Population Map</span><span><input id='map-population' value=''  type="file" accept="image/*" act='update-pop-map'/></span></div> -->
+<!-- <div class='in-single'><span>Elevation Map</span><span><input id='map-elevation' value='./el_map_1.png'   type="file" accept="image/*" act='update-ele-map'/></span></div> -->
+<div class='out-log'>
+<div>N : <span id='current-step'>0</span></div>
+</div>
+<div class='button-a'><a href='#roads' act='next-step'>Next Step</a></div>
+</div>
+
+</center>
+</p>
+<p>This is about 14 hours of development and conceptual work in, I am interested to see how it progresses, and will be introducing DAS_NOISE and BJS into the scope here at some point.  I am also drafting up the concept of doing away with a by pxl method, and making a vector tracing system that will be much more modular, and have the ability to make decisions on if it should attempt to link up with an intersection, cross a road, or how steep it should make a turn.</p>
+
+
+<script>
+document.addEventListener( 'DOMContentLoaded', function () {
+    test1 = new citiez('City-One',{width:600, height:600},'test-1');
+    console.log(test1);
+        
+    /*if(document.getElementById('map-population').files.length){
+        test1.createPopulationMap(document.getElementById('map-population').files[0]);
+    }
+    
+    if(document.getElementById('map-elevation').files.length){
+        test1.createElevationMap(document.getElementById('map-elevation').files[0]);
+    }*/
+    test1.createPopulationMapURL('./pop_map_1.png');
+    test1.setOrigin(new vec2( parseInt(document.getElementById('city-origin-x').value,10),parseInt(document.getElementById('city-origin-y').value,10)));
+    
+    document.addEventListener('change', function(e){
+            var t = e.target;
+            var act = t.getAttribute('act');
+                        if(act){
+            switch(act){
+                    case "update-pop-map" :
+                        test1.createPopulationMap(t.files[0]);
+                    break;    
+                    case "update-ele-map" :
+                        test1.createElevationMap(t.files[0]);
+                    break;
+                    case "update-origin" :
+                        var x = parseInt(document.getElementById('city-origin-x').value,10);
+                        var y = parseInt(document.getElementById('city-origin-y').value,10);
+                        test1.setOrigin(new vec2(x,y));
+                    break;
+                }
+            };
+        }, false);
+        
+        document.addEventListener('click', function(e){
+            var t = e.target;
+            var act = t.getAttribute('act');
+            if(act){
+                switch(act){
+                    case "next-step" :
+                        test1.takeStep();
+                        document.getElementById('current-step').innerHTML = test1.core.n;
+                    break;    
+                }
+            };
+        }, false);
+    
+    /*
+    test1.addLetter("O", "A", null);
+    test1.addLetter("A", "A", function(axiom){
+        var core = axiom.core;
+        Growth(new vec2(0,0), axiom, [], new vec2(0,1));
+    });
+    
+    function Growth(cp, axiom, path, dir){
+        console.log(cp.clone().add(dir));
+        var nP = cp.clone().add(dir);
+        var population = test1.getLocationValue(nP, 'population');
+        var elevation = test1.getLocationValue(nP, 'elevation');
+        if(dir.y>0){
+            //NORTH?
+            
+        }else if(dir.y<0){
+            //SOUTH?
+            
+        }else if(dir.x<0){
+            //EAST?
+            
+        }else if(dir.x>0){
+            //WEST?
+        }
+        
+    };
+    
+    
+    if(document.getElementById('map-population').files.length){
+        test1.createPopulationMap(document.getElementById('map-population').files[0]);
+    }
+    
+    if(document.getElementById('map-elevation').files.length){
+        test1.createElevationMap(document.getElementById('map-elevation').files[0]);
+    }
+    
+    
+
+        
+        */
+});
+</script>
+
+
+</body>
+</html>
+
+

@@ -1,0 +1,152 @@
+  html, body {
+        width   : 100%;
+        height  : 100%;
+        margin  : 0;
+        padding : 1em;
+		  -webkit-box-sizing: border-box;
+ 		 -moz-box-sizing: border-box;
+  			box-sizing: border-box;
+			font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+			font-size:18px;
+			background:#F9F9F9;
+			color:#111;
+			text-shadow:
+			-1px -1px #fff,
+			0px 1px rgba(0,0,0,0.5)
+			
+    }
+	
+.desc{
+	font-size: 0.5em;
+	padding-left: 1em;
+}
+	h1,h2,h3,h4,h5{
+		font-variant:small-caps;
+		font-weight:bold;	
+		margin-top: -0.5em;
+		padding-top: 0;
+		margin-bottom: 0.25em;
+	}
+	h1{
+		font-size:1.8em;
+	}
+	h2{
+		font-size:1.4em;
+	}
+	h3{
+		font-size:1.2em;
+	}
+	h4{
+		font-size:1.0em;
+	}
+	h5{
+		font-size:0.8em;
+	}
+
+
+hr {
+  margin-bottom: 12px;
+}
+p {
+  margin: 1em 0em;
+  padding: 0;
+  margin-top: 0;
+}
+
+.out-wrap{
+	display:inline-block;
+	position:relative;
+	width:600px;
+	height:600px;
+	border:1px solid grey;	
+}
+
+.ouput{
+	display:block;
+	position:absolute;
+	left:0;
+	top:0;
+}
+
+#roads{
+z-index:10001;	
+}
+#overlay{
+z-index:10002;	
+}
+
+#population{
+z-index:101;	
+}
+
+#elevation{
+z-index:101;	
+}
+
+.out-menu{
+	display: inline-block;
+	width:240px;
+	vertical-align: top;
+}
+
+.in-single, .in-split{
+	display: block;
+	font-size: 12px;
+		background: rgba(0,0,100,0.2);
+	border: 1px solid rgba(0,0,100,0.2);
+	padding: 0;
+	border-bottom: 3px solid rgba(0,0,100,0.4);
+}
+
+
+
+.in-single input{
+ width:calc(100% - 0.5em);
+	margin-bottom: 0.2em;
+}
+
+.in-single span:first-of-type,.in-split span:first-of-type{
+	display: block;
+	text-align: left;
+}
+
+.in-split span:nth-of-type(2), .in-split span:nth-of-type(4){
+	display: inline-block;
+ width:calc(25% - 0.5em);
+  padding-right: 0.5em;
+	text-align: right;
+}
+
+.in-split input{
+	margin-bottom: 0.2em;
+ width:calc(25% - 0.5em);
+}
+
+.button-a{
+	background: rgba(0,0,0,0.5);
+	cursor: pointer;
+	display: block;
+	position: relative;
+	
+}
+
+.button-a a{
+	width:100%;
+	text-decoration: none;
+	color:rgba(0,0,100,0.35);
+	width:100%;
+	height: 100%;
+}
+
+.button-a:hover{
+background: rgba(0,0,0,0.35);
+}
+
+.button-a:hover a{
+color:white;
+}
+
+
+
+
+
